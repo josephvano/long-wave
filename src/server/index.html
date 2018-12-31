@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io.connect();
+      socket.on('message', function(time){
+        document.getElementById('time').innerHTML = time;
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Testing socket.io</h1>
+    The time is: <span id="time"></span>
+  </body>
+</html>
