@@ -14,8 +14,6 @@ describe("wavecaster", () => {
     const text = await getFile(file);
 
     result = scraper.parse(text);
-
-    console.log(result);
   });
 
   it("should get summary", () => {

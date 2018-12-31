@@ -1,3 +1,4 @@
+import * as hash    from "object-hash";
 import * as agent   from "superagent";
 import * as cheerio from "cheerio";
 import {strip}      from "../../utils";
@@ -5,24 +6,31 @@ import {strip}      from "../../utils";
 type DayOfWeek = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "Unknown";
 const DayRegex = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s?(.*)$/;
 
-class ForecastRating{
+class ForecastRating {
   day: string;
   summary: string;
   rating: string;
 }
 
-export class Forecast{
+export class Forecast {
   summary: string;
   forecasts: ForecastRating[];
-  date?: Date | string;
   images?: string[];
+
+  constructor(values?: Partial<Forecast>){
+    Object.assign(this, values);
+  }
+
+  toHash(): string {
+    return hash(this);
+  }
 }
 
 export class WavecasterScraper {
   url = "https://www.thewavecaster.com/";
 
   async fetch(): Promise<string> {
-   const response = await agent.get(this.url);
+    const response = await agent.get(this.url);
 
     return response.text;
   }
@@ -31,43 +39,42 @@ export class WavecasterScraper {
     const $ = cheerio.load(body);
     const tables = $("table");
     let summary = "",
-        forecasts;
+      forecasts;
 
-    if(tables.length >  1){
+    if (tables.length > 1) {
       summary = strip(tables.first().text());
 
       forecasts = tables
-                  .eq(1)
-                  .find("tr")
-                  .map( (index: number, el: CheerioElement) => {
-                    const text = strip($(el).text());
+        .eq(1)
+        .find("tr")
+        .map((index: number, el: CheerioElement) => {
+          const text = strip($(el).text());
 
-                    return {
-                      day: this._parseForecastDay(text),
-                      rating: this._parseForecastRating(el),
-                      summary: this._parseForecastSummary(text)
-                    }
-                  }).get();
+          return {
+            day    : this._parseForecastDay(text),
+            rating : this._parseForecastRating(el),
+            summary: this._parseForecastSummary(text)
+          }
+        }).get();
     }
 
     const images = $(".LayoutContainer div div div div:nth-child(3)")
-                      .first()
-                      .children("img")
-                      .get()
-                      .map( (el: CheerioElement) => el.attribs['src']);
+      .first()
+      .children("img")
+      .get()
+      .map((el: CheerioElement) => el.attribs['src']);
 
-    return {
-      date: new Date(),
+    return new Forecast({
       summary,
       images,
       forecasts
-    }
+    });
   }
 
   _parseForecastDay(content: string): DayOfWeek | string {
     const result = content.match(DayRegex);
 
-    if(result){
+    if (result) {
       return result[1];
     }
 
@@ -77,16 +84,16 @@ export class WavecasterScraper {
   _parseForecastRating(content: CheerioElement): string {
     let rating = "#007f00";
 
-    cheerio(content).find("font").map( (ix: number, element: CheerioElement) => {
+    cheerio(content).find("font").map((ix: number, element: CheerioElement) => {
       const day = cheerio(element).text();
       const result = day.match(DayRegex);
 
-      if(result){
+      if (result) {
         rating = element.attribs["color"];
       }
     }).get();
 
-    switch(rating){
+    switch (rating) {
       case "#007f00":
         return "Poor";
       case "#bf5f00":
@@ -101,7 +108,7 @@ export class WavecasterScraper {
   _parseForecastSummary(content: string): string {
     const result = content.match(DayRegex);
 
-    if(result && result.length > 1){
+    if (result && result.length > 1) {
       return result[2];
     }
 
