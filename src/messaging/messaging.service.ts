@@ -1,11 +1,11 @@
 import {Twilio}     from "twilio";
 import {injectable} from "inversify";
 
-const accountSid = process.env.TWILIO_SID; // Your Account SID from www.twilio.com/console
-const authToken = process.env.TWILIO_TOKEN;   // Your Auth Token from www.twilio.com/console
-const twilioNumber = "***REMOVED***";
+const accountSid   = process.env.TWILIO_SID;      // Your Account SID from www.twilio.com/console
+const authToken    = process.env.TWILIO_TOKEN;    // Your Auth Token from www.twilio.com/console
+const twilioNumber = process.env.TWILIO_NUMBER;
 
-export interface IMessagingService{
+export interface IMessagingService {
   send(to: string, body: string): Promise<any>;
 }
 
