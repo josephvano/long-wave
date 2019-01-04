@@ -5,9 +5,8 @@
    "main": "index.js",
    "scripts": {
       "start": "ts-node src/index.ts",
-      "test": "rm -rf dist && tsc --project src/test/tsconfig.test.json && mkdir -p dist/test && cp -R src/test/files/ dist/test/files && mocha dist/**/unit/**/*.spec.js",
-      "test:integration": "rm -rf dist && tsc --project src/test/tsconfig.test.json && mkdir -p dist/test && cp -R src/test/files dist/test/files && mocha dist/**/integration/**/*.spec.js",
-      "compile": "rm -rf dist && tsc",
+      "test": "mocha --require ./src/bootstrap.js src/test/unit/**/*.spec.ts",
+      "test:integration": "mocha --require ./src/bootsrap.js src/test/integration/**/*.spec.ts",
       "jobs": "node --require ./src/bootstrap.js ./src/jobs/index.ts",
       "jobs:debug": "node --inspect --require ./src/bootstrap.js dist/jobs/index.js"
    },
@@ -23,6 +22,7 @@
    "homepage": "https://github.com/josephvano/long-wave#readme",
    "dependencies": {
       "cheerio": "^1.0.0-rc.2",
+      "inversify": "^5.0.1",
       "moment": "^2.23.0",
       "mongodb": "^3.1.10",
       "mysql": "^2.14.1",
@@ -32,6 +32,7 @@
       "socket.io": "^1.7.4",
       "superagent": "^4.1.0",
       "ts-node": "^7.0.1",
+      "twilio": "^3.26.1",
       "typeorm": "0.2.11"
    },
    "devDependencies": {
@@ -43,6 +44,7 @@
       "@types/object-hash": "^1.2.0",
       "@types/should": "^13.0.0",
       "@types/superagent": "^3.8.5",
+      "@types/twilio": "0.0.10",
       "mocha": "^5.2.0",
       "should": "^13.2.3",
       "typescript": "2.5.2"

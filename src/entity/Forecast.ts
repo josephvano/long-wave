@@ -1,18 +1,21 @@
 import {Entity, Column, ObjectIdColumn, ObjectID} from "typeorm";
 import * as hash                                  from "object-hash";
-import {Moment}                                   from "moment";
 import moment = require("moment");
 
 @Entity()
 export class ForecastRating {
   @ObjectIdColumn()
-  id: ObjectID;
+  id?: ObjectID;
   @Column()
   day: string;
   @Column()
   summary: string;
   @Column()
   rating: string;
+
+  constructor(rating?: Partial<ForecastRating>){
+    Object.assign(this, rating);
+  }
 }
 
 @Entity()
