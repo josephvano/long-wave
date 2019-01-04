@@ -1,30 +1,11 @@
-import * as hash    from "object-hash";
 import * as agent   from "superagent";
 import * as cheerio from "cheerio";
 import {strip}      from "../../utils";
+import {Forecast}   from "../../../../entity/Forecast";
+import moment = require("moment");
 
 type DayOfWeek = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "Unknown";
 const DayRegex = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s?(.*)$/;
-
-class ForecastRating {
-  day: string;
-  summary: string;
-  rating: string;
-}
-
-export class Forecast {
-  summary: string;
-  forecasts: ForecastRating[];
-  images?: string[];
-
-  constructor(values?: Partial<Forecast>){
-    Object.assign(this, values);
-  }
-
-  toHash(): string {
-    return hash(this);
-  }
-}
 
 export class WavecasterScraper {
   url = "https://www.thewavecaster.com/";
@@ -97,6 +78,7 @@ export class WavecasterScraper {
       case "#007f00":
         return "Poor";
       case "#bf5f00":
+      case "#ff7f00":
         return "Fair";
       case "#bf0000":
         return "Good";

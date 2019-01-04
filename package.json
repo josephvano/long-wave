@@ -1,41 +1,50 @@
 {
-  "name": "long-wave",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node  src/server/index.js",
-    "test": "rm -rf dist && tsc --project src/test/tsconfig.test.json && mkdir -p dist/test && cp -R src/test/files/ dist/test/files && mocha dist/**/unit/**/*.spec.js",
-    "test:integration": "rm -rf dist && tsc --project src/test/tsconfig.test.json && mkdir -p dist/test && cp -R src/test/files dist/test/files && mocha dist/**/integration/**/*.spec.js",
-    "compile": "tsc"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/josephvano/long-wave.git"
-  },
-  "author": "Joseph Vano",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/josephvano/long-wave/issues"
-  },
-  "homepage": "https://github.com/josephvano/long-wave#readme",
-  "dependencies": {
-    "cheerio": "^1.0.0-rc.2",
-    "object-hash": "^1.3.1",
-    "socket.io": "^1.7.4",
-    "superagent": "^4.1.0"
-  },
-  "devDependencies": {
-    "@types/cheerio": "^0.22.10",
-    "@types/express": "^4.16.0",
-    "@types/mocha": "^5.2.5",
-    "@types/node": "^10.12.18",
-    "@types/object-hash": "^1.2.0",
-    "@types/should": "^13.0.0",
-    "@types/superagent": "^3.8.5",
-    "mocha": "^5.2.0",
-    "should": "^13.2.3",
-    "ts-node": "^7.0.1",
-    "typescript": "^3.2.2"
-  }
+   "name": "long-wave",
+   "version": "1.0.0",
+   "description": "",
+   "main": "index.js",
+   "scripts": {
+      "start": "ts-node src/index.ts",
+      "test": "rm -rf dist && tsc --project src/test/tsconfig.test.json && mkdir -p dist/test && cp -R src/test/files/ dist/test/files && mocha dist/**/unit/**/*.spec.js",
+      "test:integration": "rm -rf dist && tsc --project src/test/tsconfig.test.json && mkdir -p dist/test && cp -R src/test/files dist/test/files && mocha dist/**/integration/**/*.spec.js",
+      "compile": "rm -rf dist && tsc",
+      "jobs": "node --require ./src/bootstrap.js ./src/jobs/index.ts",
+      "jobs:debug": "node --inspect --require ./src/bootstrap.js dist/jobs/index.js"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/josephvano/long-wave.git"
+   },
+   "author": "Joseph Vano",
+   "license": "ISC",
+   "bugs": {
+      "url": "https://github.com/josephvano/long-wave/issues"
+   },
+   "homepage": "https://github.com/josephvano/long-wave#readme",
+   "dependencies": {
+      "cheerio": "^1.0.0-rc.2",
+      "moment": "^2.23.0",
+      "mongodb": "^3.1.10",
+      "mysql": "^2.14.1",
+      "node-cron": "^2.0.3",
+      "object-hash": "^1.3.1",
+      "reflect-metadata": "^0.1.10",
+      "socket.io": "^1.7.4",
+      "superagent": "^4.1.0",
+      "ts-node": "^7.0.1",
+      "typeorm": "0.2.11"
+   },
+   "devDependencies": {
+      "@types/cheerio": "^0.22.10",
+      "@types/express": "^4.16.0",
+      "@types/mocha": "^5.2.5",
+      "@types/node": "^10.12.18",
+      "@types/node-cron": "^2.0.0",
+      "@types/object-hash": "^1.2.0",
+      "@types/should": "^13.0.0",
+      "@types/superagent": "^3.8.5",
+      "mocha": "^5.2.0",
+      "should": "^13.2.3",
+      "typescript": "2.5.2"
+   }
 }

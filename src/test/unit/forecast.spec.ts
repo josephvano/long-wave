@@ -1,5 +1,5 @@
-import {Forecast} from "../../server/lib/scrapers/sites/wavecaster";
 import should = require("should");
+import {Forecast} from "../../entity/Forecast";
 
 describe("forecast", () => {
 
