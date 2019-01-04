@@ -1,22 +1,27 @@
-import {WavecasterScraper}                      from "../server/lib/scrapers/sites/wavecaster";
-import {Connection, createConnection}           from "typeorm";
-import {Forecast, ForecastHash, ForecastRating} from "../entity/Forecast";
-import { container }                            from "./container.config";
-import {MessagingFormatterHandler}              from "../messaging/formatters/messaging.formatter";
-import {IMessagingService, MessagingService}    from "../messaging/messaging.service";
+import {Connection, createConnection} from "typeorm";
+
+import {WavecasterScraper}         from "../server/lib/scrapers/sites/wavecaster";
+import {Forecast, ForecastHash}    from "../entity/Forecast";
+import {container}                 from "./container.config";
+import {MessagingFormatterHandler} from "../messaging/formatters/messaging.formatter";
+import {MessagingService}          from "../messaging/messaging.service";
+import {Logger}                    from "../common/logger";
 
 const cron = require("node-cron");
 let connection;
 
-console.log("Path: ", __dirname);
-
 const init = () => createConnection();
+
+const logger = container.get<Logger>(Logger);
 
 init().then(result => {
   connection = result;
+
+  logger.debug("Setting up jobs.", { namespace: "Jobs"});
+
   cron.schedule("*/15 6-12 * * *", () => {
     performTask(connection).then(() => {
-      console.log("Finished.")
+      logger.info("Finished task.", {namespace: 'Jobs'});
     });
   });
 });
@@ -32,13 +37,12 @@ const performTask = async (connection: Connection): Promise<any> => {
 
   const today = new Date();
 
-  console.log("Pinging: ", today);
-  console.log(hash);
+  logger.debug('Pinging ${today}', {namespace: 'Jobs'});
 
   const count = await manager.count(ForecastHash, {hash});
 
   if (count === 0) {
-    console.log("Creating forecast: ", result);
+    logger.info("Creating forecast: ", { namespace: 'Jobs', result });
     const forecastHash = new ForecastHash("wavecaster", hash, today);
 
     const messagingFormatter = container.get(MessagingFormatterHandler);
