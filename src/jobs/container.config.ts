@@ -6,9 +6,11 @@ import {Logger}                                                     from "../com
 
 const container = new Container();
 
+const logPath = process.env.LONGWAVE_LOG_PATH || '/var/log/longwave';
+
 container.bind<IMessagingService>(MessagingService).to(MessagingService);
 container.bind<MessagingFormatterHandler>(MessagingFormatterHandler).to(MessagingFormatterHandler);
 container.bind<MessagingFormatter>(TYPE_SYMBOL).to(WavecasterMessagingFormatter);
-container.bind<Logger>(Logger).toSelf();
+container.bind<Logger>(Logger).toConstantValue(new Logger("jobs", logPath));
 
 export { container };
