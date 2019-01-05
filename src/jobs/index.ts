@@ -37,7 +37,7 @@ const performTask = async (connection: Connection): Promise<any> => {
 
   const today = new Date();
 
-  logger.debug('Pinging ${today}', {namespace: 'Jobs'});
+  logger.debug(`Pinging ${today}`, {namespace: 'Jobs'});
 
   const count = await manager.count(ForecastHash, {hash});
 
