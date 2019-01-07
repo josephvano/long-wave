@@ -1,0 +1,37 @@
+version: '3'
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  mongodb:
+    image: 'mongo:latest'
+    ports: 
+      - 27018:27017
+    volumes:
+      - /data/docker/db:/data/db
+      - ./.docker/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d
+    networks:
+      - app-tier
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=sample
+      - MONGO_INITDB_DATABASE=longwave
+  jobs:
+    entrypoint: pm2-runtime ecosystem.config.js
+    image: josephvano/longwave-jobs
+    depends_on:
+      - mongodb
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      TWILIO_SID: ***REMOVED***
+      TWILIO_TOKEN: ***REMOVED***
+      TWILIO_NUMBER: ***REMOVED***
+      DB_PORT: 27017
+      DB_HOST: mongodb
+      DB_USERNAME: longwave
+      DB_PASSWORD: longwave
+    networks:
+      - app-tier
