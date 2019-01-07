@@ -23,8 +23,6 @@ const dbConfig = {
   host: process.env.DB_HOST || ormconfig.host
 };
 
-console.log(dbConfig);
-
 const init = () => createConnection(dbConfig);
 
 init().then(result => {
