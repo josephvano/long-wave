@@ -34,6 +34,8 @@ init().then(result => {
     performTask(connection).then(() => {
       logger.info("Finished task.", {namespace: 'Jobs'});
     });
+  }, {
+    timezone: "America/New_York"
   });
 }).catch( err => {
   console.log("Connection failed");
