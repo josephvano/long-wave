@@ -6,24 +6,40 @@ import {container}                 from "./container.config";
 import {MessagingFormatterHandler} from "../messaging/formatters/messaging.formatter";
 import {MessagingService}          from "../messaging/messaging.service";
 import {Logger}                    from "../common/logger";
+const ormconfig = require("../../ormconfig.json");
+
+const logger = container.get<Logger>(Logger);
 
 const cron = require("node-cron");
 let connection;
 
-const init = () => createConnection();
+logger.debug("Initializing jobs application", { namespace: "Jobs"});
 
-const logger = container.get<Logger>(Logger);
+const dbConfig = {
+  ...ormconfig,
+  username: process.env.DB_USERNAME || ormconfig.username || 'longwave',
+  password: process.env.DB_PASSWORD || ormconfig.password || '',
+  port: process.env.DB_PORT || ormconfig.port,
+  host: process.env.DB_HOST || ormconfig.host
+};
+
+console.log(dbConfig);
+
+const init = () => createConnection(dbConfig);
 
 init().then(result => {
   connection = result;
 
-  logger.debug("Setting up jobs.", { namespace: "Jobs"});
+  logger.debug("Connected to database.", { namespace: "Jobs"});
 
   cron.schedule("*/15 6-12 * * *", () => {
     performTask(connection).then(() => {
       logger.info("Finished task.", {namespace: 'Jobs'});
     });
   });
+}).catch( err => {
+  console.log("Connection failed");
+  logger.error(err);
 });
 
 const performTask = async (connection: Connection): Promise<any> => {
