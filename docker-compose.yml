@@ -20,6 +20,8 @@ services:
   jobs:
     entrypoint: pm2-runtime ecosystem.config.js
     image: josephvano/longwave-jobs
+    volume:
+      - /var/log/longwave:/var/log/longwave
     depends_on:
       - mongodb
     build:
