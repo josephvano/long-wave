@@ -33,7 +33,7 @@ export class WavecasterScraper {
 
           return {
             day    : this._parseForecastDay(text),
-            rating : this._parseForecastRating(el),
+            rating : this.getRating(el),
             summary: this._parseForecastSummary(text)
           }
         }).get();
@@ -62,15 +62,21 @@ export class WavecasterScraper {
     return "Unknown";
   }
 
-  _parseForecastRating(content: CheerioElement): string {
+  getRating(content: CheerioElement): string {
     let rating = "#007f00";
+    const ignoreColors = {
+      "#007f00": true,
+      "#000000": true,
+    };
 
     cheerio(content).find("font").map((ix: number, element: CheerioElement) => {
       const day = cheerio(element).text();
       const result = day.match(DayRegex);
 
-      if (result) {
-        rating = element.attribs["color"];
+      const color = element.attribs["color"];
+
+      if (result && color && !ignoreColors[color]) {
+        rating = color;
       }
     }).get();
 
