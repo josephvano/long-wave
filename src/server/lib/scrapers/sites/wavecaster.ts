@@ -1,14 +1,21 @@
-import * as agent   from "superagent";
-import * as cheerio from "cheerio";
-import {strip}      from "../../utils";
-import {Forecast}   from "../../../../entity/Forecast";
-import moment = require("moment");
+import * as agent                    from "superagent";
+import * as cheerio                  from "cheerio";
+import {strip}                       from "../../utils";
+import {Forecast}                    from "../../../../entity/Forecast";
+import {ILogger, Logger, NullLogger} from "../../../../common/logger";
+import {inject}                      from "inversify";
 
 type DayOfWeek = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "Unknown";
 const DayRegex = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s?(.*)$/;
 
 export class WavecasterScraper {
   url = "https://www.thewavecaster.com/";
+
+  constructor(@inject(Logger) public logger?: ILogger){
+    if(this.logger === null){
+      this.logger = new NullLogger();
+    }
+  }
 
   async fetch(): Promise<string> {
     const response = await agent.get(this.url);
@@ -17,13 +24,25 @@ export class WavecasterScraper {
   }
 
   parse(body: string): Forecast {
-    const $ = cheerio.load(body);
-    const tables = $("table");
-    let summary = "",
-      forecasts;
+    const $           = cheerio.load(body);
+    const tables      = $("table");
+    const summaryArea = $(".LayoutContainer div:first-child");
+    let summary       = "",
+          forecasts;
+
+    try {
+      summary = strip(summaryArea.text().replace('Morning Surf Report', ''));
+
+      if (summary.length > 150) {
+        summary = summary.substring(0, 150).trim();
+      }
+    }
+    catch (ex) {
+      this.logger.warn('Could not parse summary.');
+      summary = 'N/A';
+    }
 
     if (tables.length > 1) {
-      summary = strip(tables.first().text());
 
       forecasts = tables
         .eq(1)
@@ -63,14 +82,14 @@ export class WavecasterScraper {
   }
 
   getRating(content: CheerioElement): string {
-    let rating = "#007f00";
+    let rating         = "#007f00";
     const ignoreColors = {
       "#007f00": true,
       "#000000": true,
     };
 
     cheerio(content).find("font").map((ix: number, element: CheerioElement) => {
-      const day = cheerio(element).text();
+      const day    = cheerio(element).text();
       const result = day.match(DayRegex);
 
       const color = element.attribs["color"];

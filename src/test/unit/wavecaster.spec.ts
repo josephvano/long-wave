@@ -34,11 +34,11 @@ describe("wavecaster", () => {
   });
 
   it("should get summary", () => {
-    should.equal(result.summary, "One this last day of the year we have a ESE wind & swell at knee to belly high with a 10mph+ SE winds, waves are rideable but not very good, at least the weather is great.")
+    should.equal(result.summary, "THis Friday morning we have a ENE swell at waist to chest high in sets with 5-10mph NNW winds, long lines with plenty of workable sections.")
   });
 
   it("should get images", () => {
-    should.equal(result.images.length, 9);
+    should.equal(result.images.length, 8);
   });
 
   it("should get 6 day forecast", () => {
@@ -46,15 +46,15 @@ describe("wavecaster", () => {
   });
 
   it("should get forecast day of week", () => {
-    should.equal(result.forecasts[0].day, "Tuesday");
+    should.equal(result.forecasts[0].day, "Saturday");
   });
 
   it("should get forecast rating", () => {
-    should.equal(result.forecasts[0].rating, "Fair");
+    should.equal(result.forecasts[0].rating, "Poor");
   });
 
   it("should get forecast summary", () => {
-    should.equal(result.forecasts[0].summary, "ESE swell at thigh to waist high+ with 5-10mph WSW/SE winds.");
+    should.equal(result.forecasts[0].summary, "ESE swell at knee high with 15-20mph S/SE winds.");
   });
 });
 

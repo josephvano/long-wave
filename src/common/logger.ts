@@ -1,8 +1,25 @@
 import * as winston from "winston";
 import {injectable} from "inversify";
 
+export interface ILogger{
+  debug(message: string, ...meta: any[]):void;
+  info(message: string, ...meta: any[]):void;
+  warn(message: string, ...meta: any[]):void;
+}
+
+export class NullLogger implements ILogger {
+  debug(message: string, ...meta: any[]): void {
+  }
+
+  info(message: string, ...meta: any[]): void {
+  }
+
+  warn(message: string, ...meta: any[]): void {
+  }
+}
+
 @injectable()
-export class Logger {
+export class Logger implements ILogger {
   private _logger;
 
   constructor(namespace: string, path: string) {

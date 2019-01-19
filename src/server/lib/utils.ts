@@ -6,6 +6,6 @@ export const strip = (text: string): string => {
   if(text === null || text === undefined || text === "") return text;
 
   return text
-          .replace('\n', '',)
+          .replace(/\n+/g, '',)
           .trim();
 };
