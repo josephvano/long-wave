@@ -3,11 +3,12 @@ import * as cheerio                  from "cheerio";
 import {strip}                       from "../../utils";
 import {Forecast}                    from "../../../../entity/Forecast";
 import {ILogger, Logger, NullLogger} from "../../../../common/logger";
-import {inject}                      from "inversify";
+import {inject, injectable}          from "inversify";
 
 type DayOfWeek = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday" | "Unknown";
 const DayRegex = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s?(.*)$/;
 
+@injectable()
 export class WavecasterScraper {
   url = "https://www.thewavecaster.com/";
 
@@ -33,11 +34,11 @@ export class WavecasterScraper {
     try {
       summary = strip(summaryArea.text().replace('Morning Surf Report', ''));
 
-      this.logger.debug(`Today's Surf Report Summary: ${summary}`);
-
       if (summary.length > 150) {
         summary = summary.substring(0, 150).trim();
       }
+
+      this.logger.debug(`Today's Surf Report Summary: ${summary}`);
     }
     catch (ex) {
       this.logger.warn('Could not parse summary.');

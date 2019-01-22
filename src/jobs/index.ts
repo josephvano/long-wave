@@ -45,7 +45,7 @@ init().then(result => {
 const performTask = async (connection: Connection): Promise<any> => {
   const manager = connection.manager;
 
-  const scraper = new WavecasterScraper();
+  const scraper = container.get(WavecasterScraper);
   const html = await scraper.fetch();
   const result = scraper.parse(html);
 
