@@ -33,6 +33,8 @@ export class WavecasterScraper {
     try {
       summary = strip(summaryArea.text().replace('Morning Surf Report', ''));
 
+      this.logger.debug(`Today's Surf Report Summary: ${summary}`);
+
       if (summary.length > 150) {
         summary = summary.substring(0, 150).trim();
       }

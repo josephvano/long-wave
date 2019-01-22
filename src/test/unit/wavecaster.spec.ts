@@ -23,7 +23,6 @@ describe("parse rating", () => {
 describe("wavecaster", () => {
   let result;
 
-
   before(async () => {
     const scraper = new WavecasterScraper();
     const file    = path.join(__dirname, "..", "files", "wavecaster.html");
@@ -34,11 +33,12 @@ describe("wavecaster", () => {
   });
 
   it("should get summary", () => {
-    should.equal(result.summary, "THis Friday morning we have a ENE swell at waist to chest high in sets with 5-10mph NNW winds, long lines with plenty of workable sections.")
+    console.log(result);
+    should.equal(result.summary, "This Monday morning we have a NE wind swell at knee high with 10-15mph NNW winds, not much today, gets better mid-week.");
   });
 
   it("should get images", () => {
-    should.equal(result.images.length, 8);
+    should.equal(result.images.length, 1);
   });
 
   it("should get 6 day forecast", () => {
@@ -46,7 +46,7 @@ describe("wavecaster", () => {
   });
 
   it("should get forecast day of week", () => {
-    should.equal(result.forecasts[0].day, "Saturday");
+    should.equal(result.forecasts[0].day, "Tuesday");
   });
 
   it("should get forecast rating", () => {
@@ -54,7 +54,7 @@ describe("wavecaster", () => {
   });
 
   it("should get forecast summary", () => {
-    should.equal(result.forecasts[0].summary, "ESE swell at knee high with 15-20mph S/SE winds.");
+    should.equal(result.forecasts[0].summary, "E wind swell at knee to waist high with 15-20mph E winds.");
   });
 });
 
