@@ -30,6 +30,8 @@ init().then(result => {
 
   logger.debug("Connected to database.", { namespace: "Jobs"});
 
+  // To test locally change the cronExpression to every minute
+  // cronExpression: * * * * *
   cron.schedule("*/15 6-12 * * *", () => {
     performTask(connection).then(() => {
       logger.info("Finished task.", {namespace: 'Jobs'});
