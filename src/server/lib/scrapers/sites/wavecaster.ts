@@ -10,7 +10,7 @@ const DayRegex = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s?
 
 @injectable()
 export class WavecasterScraper {
-  url = "https://www.thewavecaster.com/";
+  url = "https://thewavecaster.com/";
 
   constructor(@inject(Logger) public logger?: ILogger){
     if(!this.logger){
