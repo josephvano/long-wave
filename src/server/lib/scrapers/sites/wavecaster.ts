@@ -19,9 +19,16 @@ export class WavecasterScraper {
   }
 
   async fetch(): Promise<string> {
-    const response = await agent.get(this.url);
+    try {
+      const response = await agent.get(this.url);
+      return response.text;
+    }
+    catch (er) {
+      this.logger.info(`Could not fetch site ${this.url}: ${er.response}`);
+      this.logger.error(er.message);
+    }
 
-    return response.text;
+    return "";
   }
 
   parse(body: string): Forecast {

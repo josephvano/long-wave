@@ -1,10 +1,12 @@
 import * as winston from "winston";
 import {injectable} from "inversify";
+import { Logger as WinstonLogger } from "winston";
 
 export interface ILogger{
   debug(message: string, ...meta: any[]):void;
   info(message: string, ...meta: any[]):void;
   warn(message: string, ...meta: any[]):void;
+  error(message: string | any): void;
 }
 
 export class NullLogger implements ILogger {
@@ -16,15 +18,18 @@ export class NullLogger implements ILogger {
 
   warn(message: string, ...meta: any[]): void {
   }
+
+  error(message: string): void {
+  }
 }
 
 @injectable()
 export class Logger implements ILogger {
-  private _logger;
+  private _logger: WinstonLogger;
 
   constructor(namespace: string, path: string) {
     this._logger = winston.createLogger({
-      level     : 'info',
+      level     : 'debug',
       format    : winston.format.json(),
       transports: [
         //
@@ -35,6 +40,12 @@ export class Logger implements ILogger {
         new winston.transports.File({filename: `${path}/${namespace}-combined.log`})
       ]
     });
+
+    this._logger.exitOnError = false;
+
+    this._logger.exceptions.handle(
+      new winston.transports.File({ filename: `${path}/${namespace}-exceptions.log`})
+    );
 
     //
     // If we're not in production then log to the `console` with the format:
@@ -61,7 +72,7 @@ export class Logger implements ILogger {
     this._logger.warn(message, meta);
   }
 
-  error(message: string, ...meta: any[]): void {
+  error(message: string | any, ...meta: any[]): void {
     this._logger.error(message, meta);
   }
 }
